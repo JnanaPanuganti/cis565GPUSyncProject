@@ -10,3 +10,5 @@ Some of the exsisting NVDIA APIS have been used in the project, specifically Shr
 
 The results include debug information as well as number of blocks and therads and the time taken to execute the kernal.
 
+
+**Please ignore the Barrier folder**
