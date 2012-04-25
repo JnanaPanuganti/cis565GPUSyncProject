@@ -1,28 +1,15 @@
-/*
- * Copyright 1993-2010 NVIDIA Corporation.  All rights reserved.
- *
- * Please refer to the NVIDIA end user license agreement (EULA) associated
- * with this source code for terms and conditions that govern your use of
- * this software. Any use, reproduction, disclosure, or distribution of
- * this software and related documentation outside the terms of the EULA
- * is strictly prohibited.
- *
- */
 #pragma OPENCL EXTENSION cl_khr_global_int32_base_atomics : enable
 #pragma OPENCL EXTENSION cl_khr_local_int32_base_atomics : enable
 
+#define I_MIN 1
+#define I_MAX 1
 
 void lock(volatile __global int* lock_mutex, volatile __global int* sleep_for)
 {
 	int old_val=1;
 	int prev_sleep_time=0;
 	int bID = get_group_id(0);
-	int imin=1;
-	int num_blocks = get_num_groups(0);
-	int imax=(num_blocks/2)%10;
-	
-	sleep_for[bID] = imin;
-
+	sleep_for[bID] = I_MIN;
 	while(old_val)
 	{
 		old_val = atom_xchg(&lock_mutex[0],1);
@@ -35,13 +22,13 @@ void lock(volatile __global int* lock_mutex, volatile __global int* sleep_for)
 			//backoff --- this is more like a delay before trying for the lock again. Not like actual CPU sleep
 				prev_sleep_time = sleep_for[bID];
 				while(sleep_for[bID]--);
-				if(prev_sleep_time<imax)
+				if(prev_sleep_time<I_MAX)
 				{
 					sleep_for[bID] = prev_sleep_time+1;
 				}
 				else
 				{
-					sleep_for[bID] = imin;
+					sleep_for[bID] = I_MIN;
 				}		
 		}//else
 
@@ -52,8 +39,8 @@ void lock(volatile __global int* lock_mutex, volatile __global int* sleep_for)
 
 void unlock(volatile __global int* lock_mutex)
 {
-	
-	atom_xchg(&lock_mutex[0],0);
+	int val=0;
+	val=atom_xchg(&lock_mutex[0],0);
 
 }    
 
@@ -63,7 +50,7 @@ void unlock(volatile __global int* lock_mutex)
 __kernel void Mutex(volatile __global int* sleep_for, volatile __global int* lock_mutex ,volatile __global int* sum )
 {
     // get index into global data array
-
+   
 	int tid_in_block = get_local_id(0);
 
 	barrier(CLK_LOCAL_MEM_FENCE|CLK_GLOBAL_MEM_FENCE);
@@ -74,7 +61,7 @@ __kernel void Mutex(volatile __global int* sleep_for, volatile __global int* loc
 		lock(&lock_mutex[0],sleep_for);
 
 		// critical section
-		sum[0] = sum[0]+1;
+		sum[0]=sum[0]+1;
 
 		// unlock the mutex
 		unlock(&lock_mutex[0]);

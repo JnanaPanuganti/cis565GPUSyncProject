@@ -1,28 +1,3 @@
-/*
- * Copyright 1993-2010 NVIDIA Corporation.  All rights reserved.
- *
- * Please refer to the NVIDIA end user license agreement (EULA) associated
- * with this source code for terms and conditions that govern your use of
- * this software. Any use, reproduction, disclosure, or distribution of
- * this software and related documentation outside the terms of the EULA
- * is strictly prohibited.
- *
- */
-
-// *********************************************************************
-// Mutex Notes:  
-//
-// A simple OpenCL API demo application that implements 
-// element by element vector addition between 2 float arrays. 
-//
-// Runs computations with OpenCL on the GPU device and then checks results 
-// against basic host CPU/C++ computation.
-//
-// Uses some 'shr' and 'ocl' functions from oclUtils and shrUtils libraries for 
-// compactness, but these are NOT required libs for OpenCL developement in general.
-// *********************************************************************
-
-// common SDK header for standard utilities and system libs 
 #include <oclUtils.h>
 #include <shrQATest.h>
 #include <stdio.h>
