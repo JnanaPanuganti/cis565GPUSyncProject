@@ -1,17 +1,9 @@
-/*
- * Copyright 1993-2010 NVIDIA Corporation.  All rights reserved.
- *
- * Please refer to the NVIDIA end user license agreement (EULA) associated
- * with this source code for terms and conditions that govern your use of
- * this software. Any use, reproduction, disclosure, or distribution of
- * this software and related documentation outside the terms of the EULA
- * is strictly prohibited.
- *
- */
+
 #pragma OPENCL EXTENSION cl_khr_global_int32_base_atomics : enable
 #pragma OPENCL EXTENSION cl_khr_local_int32_base_atomics : enable
 #define NUM_BLOCKS 2
- void group_barrier(volatile __global int* g_mutex, int goal_val)
+
+void group_barrier(volatile __global int* g_mutex, int goal_val)
 {
 
 	int iLID = get_local_id(0);
